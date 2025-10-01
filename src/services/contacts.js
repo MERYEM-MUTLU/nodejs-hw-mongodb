@@ -1,8 +1,18 @@
 import { Contact } from "../db/models/Contact.js";
 
-export const getAllContacts = async () => {
-  return Contact.find();
+// GET all
+export const getAllContacts = () => Contact.find();
+
+// GET by ID
+export const getContactById = (id) => Contact.findById(id);
+
+// CREATE
+export const createContact = (contactData) => Contact.create(contactData);
+
+// UPDATE
+export const updateContact = (id, updateData) => {
+  return Contact.findByIdAndUpdate(id, updateData, { new: true });
 };
-export const getContactById = async (id) => {
-  return Contact.findById(id);
-};
+
+// DELETE
+export const deleteContact = (id) => Contact.findByIdAndDelete(id);
