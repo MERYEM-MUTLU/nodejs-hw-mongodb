@@ -19,6 +19,7 @@ const {
   MONGODB_USER,
   MONGODB_PASSWORD,
   MONGODB_DB,
+  MONGODB_URI
 } = process.env;
 
 export const setupServer = async () => {
