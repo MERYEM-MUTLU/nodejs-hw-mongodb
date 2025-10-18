@@ -12,9 +12,14 @@ import authRouter from "./routers/auth.js";
 
 dotenv.config();
 
-const PORT = Number(process.env.PORT) || 3000;
-const { MONGODB_URL, MONGODB_USER, MONGODB_PASSWORD, MONGODB_DB, MONGODB_URI } =
-  process.env;
+const PORT = process.env.PORT || 3000;
+
+const {
+  MONGODB_URL,
+  MONGODB_USER,
+  MONGODB_PASSWORD,
+  MONGODB_DB,
+} = process.env;
 
 export const setupServer = async () => {
   const app = express();
