@@ -2,11 +2,13 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 
 import contactsRouter from "./routers/contacts.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
+import authRouter from "./routers/auth.js";
 
 dotenv.config();
 
@@ -18,13 +20,16 @@ export const setupServer = async () => {
   const app = express();
 
   app.use(express.json());
-  app.use(cors());
+  app.use(cors({ origin: true, credentials: true }));
+  app.use(cookieParser());
 
   app.get("/", (req, res) => {
     res.status(200).json({ status: 200, message: "API is working! 🚀" });
   });
 
   app.use("/contacts", contactsRouter);
+   app.use("/auth", authRouter);
+
 
   app.use(notFoundHandler);
   app.use(errorHandler);
@@ -44,3 +49,5 @@ export const setupServer = async () => {
     process.exit(1);
   }
 };
+
+setupServer();
