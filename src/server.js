@@ -2,29 +2,24 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
-
 import contactsRouter from "./routers/contacts.js";
+import authRouter from "./routers/auth.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
-import authRouter from "./routers/auth.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
-
-const {
-  MONGODB_URL,
-  MONGODB_USER,
-  MONGODB_PASSWORD,
-  MONGODB_DB,
-  MONGODB_URI
-} = process.env;
+const PORT = Number(process.env.PORT) || 3000;
+const { MONGODB_URL, MONGODB_USER, MONGODB_PASSWORD, MONGODB_DB, MONGODB_URI } =
+  process.env;
 
 export const setupServer = async () => {
   const app = express();
 
+  app.use(morgan("dev"));
   app.use(express.json());
   app.use(cors({ origin: true, credentials: true }));
   app.use(cookieParser());
@@ -34,8 +29,7 @@ export const setupServer = async () => {
   });
 
   app.use("/contacts", contactsRouter);
-   app.use("/auth", authRouter);
-
+  app.use("/auth", authRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
@@ -49,9 +43,9 @@ export const setupServer = async () => {
     await mongoose.connect(mongoUri);
     console.log("✅ MongoDB connected successfully!");
 
-    app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   } catch (error) {
-    console.error(" MongoDB connection failed:", error.message);
+    console.error("❌ MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };

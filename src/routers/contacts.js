@@ -5,8 +5,7 @@ import {
   createContactController,
   patchContactController,
   deleteContactController,
-} 
-from "../controllers/contacts.js";
+} from "../controllers/contacts.js";
 import { authenticate } from "../middlewares/authenticate.js";
 
 const router = express.Router();

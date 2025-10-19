@@ -1,13 +1,11 @@
-import bcrypt from 'bcrypt';
-import createHttpError from 'http-errors';
-import { User } from '../db/models/User.js';
-import { Session } from '../db/models/Session.js';
+import createHttpError from "http-errors";
+import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
+import { User } from "../db/models/User.js";
+import { Session } from "../db/models/Session.js";
 
-
-const JWT_SECRET = process.env.JWT_SECRET;
-const ACCESS_TOKEN_TTL = 15 * 60 * 1000; // 15 dakika
-const REFRESH_TOKEN_TTL = 30 * 24 * 60 * 60 * 1000; // 30 gün
+const ACCESS_TOKEN_TTL = 15 * 60 * 1000;
+const REFRESH_TOKEN_TTL = 30 * 24 * 60 * 60 * 1000;
 
 const cookieOptions = {
   httpOnly: true,
