@@ -10,55 +10,64 @@ export const registerController = async (req, res, next) => {
     const user = await registerUser(req.body);
     res.status(201).json({
       status: 201,
-      message: "Successfully registered a user!",
+      message: "User registered successfully",
       data: user,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const loginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const { accessToken, refreshToken, cookieOptions } = await loginUser({
-      email,
-      password,
-    });
-    res.cookie("refreshToken", refreshToken, cookieOptions);
+    const { accessToken, refreshToken } = await loginUser({ email, password });
     res.status(200).json({
       status: 200,
-      message: "Successfully logged in an user!",
-      data: { accessToken },
+      message: "Login successful",
+      data: { accessToken, refreshToken },
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const refreshController = async (req, res, next) => {
   try {
-    const { refreshToken } = req.cookies || {};
-    const { accessToken, newRefreshToken, cookieOptions } =
-      await refreshSession(refreshToken);
-    res.cookie("refreshToken", newRefreshToken, cookieOptions);
+    const { refreshToken } = req.body;
+    const { accessToken } = await refreshSession(refreshToken);
     res.status(200).json({
       status: 200,
-      message: "Successfully refreshed a session!",
+      message: "Token refreshed successfully",
       data: { accessToken },
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 };
 
 export const logoutController = async (req, res, next) => {
   try {
-    const { refreshToken } = req.cookies || {};
-    await logoutUser(refreshToken);
-    res.clearCookie("refreshToken");
+    await logoutUser();
     res.status(204).send();
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCurrentUserController = async (req, res, next) => {
+  try {
+    const user = req.user;
+    res.status(200).json({
+      status: 200,
+      message: "Current user fetched successfully",
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    next(err);
   }
 };

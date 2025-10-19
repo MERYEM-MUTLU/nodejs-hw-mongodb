@@ -6,13 +6,16 @@ import {
   loginController,
   refreshController,
   logoutController,
+  getCurrentUserController,
 } from "../controllers/auth.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
 const router = express.Router();
 
 router.post("/register", validateBody(registerSchema), registerController);
 router.post("/login", validateBody(loginSchema), loginController);
 router.post("/refresh", refreshController);
-router.post("/logout", logoutController);
+router.get("/current", authenticate, getCurrentUserController);
+router.post("/logout", authenticate, logoutController);
 
 export default router;
