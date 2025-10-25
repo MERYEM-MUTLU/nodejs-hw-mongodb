@@ -6,6 +6,9 @@ import {
   deleteContact,
 } from "../services/contacts.js";
 import createHttpError from "http-errors";
+import { Contact } from "../db/models/Contact.js";
+import { uploadToCloudinary } from "../services/cloudinary.js";
+
 
 export const getContactsController = async (req, res) => {
   const {
@@ -48,14 +51,42 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
+export const createContactController = async (req, res, next) => {
+  try {
+    const data = { ...req.body, owner: req.user?._id };
+    if (req.file?.buffer) {
+      const result = await uploadToCloudinary(req.file.buffer);
+      data.photo = result.secure_url;
+    }
+    const contact = await Contact.create(data);
+    res.status(200).json({
+      status: 200,
+      message: "Successfully created contact!",
+      data: contact,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-  res.status(200).json({
-    status: 200,
-    message: "Successfully created a contact!",
-    data: contact,
-  });
+export const updateContactController = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const data = { ...req.body };
+    if (req.file?.buffer) {
+      const result = await uploadToCloudinary(req.file.buffer);
+      data.photo = result.secure_url;
+    }
+    const updated = await Contact.findByIdAndUpdate(contactId, data, { new: true });
+    if (!updated) throw createHttpError(404, "Contact not found!");
+    res.status(200).json({
+      status: 200,
+      message: "Successfully updated contact!",
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const patchContactController = async (req, res, next) => {

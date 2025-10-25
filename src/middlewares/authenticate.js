@@ -13,13 +13,25 @@ export const authenticate = async (req, res, next) => {
     if (bearer !== "Bearer" || !token)
       throw createHttpError(401, "Invalid authorization format");
 
+    //  Token'ı doğrula
     const decoded = jwt.verify(token, SECRET);
+
+    //  Kullanıcıyı bul
     const user = await User.findById(decoded.id);
     if (!user) throw createHttpError(401, "User not found");
 
+    // Request'e ekle
     req.user = user;
+    console.log("Authenticated user:", user.email);
     next();
   } catch (error) {
-    next(createHttpError(401, error.message));
+    // Token süresi dolmuş veya bozuksa burada yakala
+    if (error.name === "TokenExpiredError") {
+      next(createHttpError(401, "Access token expired"));
+    } else if (error.name === "JsonWebTokenError") {
+      next(createHttpError(401, "Invalid token"));
+    } else {
+      next(createHttpError(401, error.message));
+    }
   }
 };

@@ -2,6 +2,8 @@ import createHttpError from "http-errors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../db/models/User.js";
+import { Session } from '../db/models/Session.js';
+import { signAccessToken, signRefreshToken, verifyRefresh } from '../utils/tokens.js';
 
 const ACCESS_TOKEN_TTL = "15m"; // 15 dakika
 const REFRESH_TOKEN_TTL = "30d"; // 30 gün
@@ -25,6 +27,8 @@ export async function loginUser({ email, password }) {
 
   const ok = await bcrypt.compare(password, user.password);
   if (!ok) throw createHttpError(401, "Invalid email or password");
+
+   await Session.deleteMany({ userId: user._id });
 
   const accessToken = jwt.sign({ id: user._id }, SECRET, {
     expiresIn: ACCESS_TOKEN_TTL,
