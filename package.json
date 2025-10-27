@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
+    "build-docs": "redocly bundle docs/openapi.yaml --ext json -o docs/swagger.json",
+    "build": "npm run build-docs",
+    "preview-docs": "redocly preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -40,9 +43,11 @@
     "pino-http": "^10.5.0"
   },
   "devDependencies": {
+    "@redocly/cli": "^2.8.0",
     "@types/multer": "^2.0.0",
     "eslint": "^9.36.0",
     "nodemon": "^3.1.10",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "swagger-ui-express": "^5.0.1"
   }
 }

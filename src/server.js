@@ -9,6 +9,7 @@ import contactsRouter from "./routers/contacts.js";
 import authRouter from "./routers/auth.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
+import apiDocsRouter from "./routers/apiDocs.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ export const setupServer = async () => {
 
   app.use("/contacts", contactsRouter);
   app.use("/auth", authRouter);
+  app.use("/api-docs", apiDocsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
